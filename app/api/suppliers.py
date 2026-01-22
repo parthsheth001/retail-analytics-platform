@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.db.deps import get_db
 from app.schemas.supplier import SupplierCreate, SupplierResponse
@@ -24,17 +24,11 @@ def create_supplier(
 
 @router.get(path="/")
 def get_suppliers(db:Session = Depends(get_db)):
-    all_suppliers = db.query(Supplier).all()
-    return all_suppliers
-
+    return supplier_service.get_all_suppliers(db)
 
 @router.get(path="/{supplier_id}")
-def get_suppliers(supplier_id:int, db:Session = Depends(get_db)):
-    supplier = db.get(Supplier,supplier_id)
-    if supplier:
-        return supplier
-    else:
-        raise HTTPException(status_code=404, detail="Supplier not found")
+def get_supplier(supplier_id:int, db:Session = Depends(get_db)):
+    return supplier_service.get_supplier(supplier_id, db)
 
 @router.get(path="/{supplier_id}/products")
 def get_products(supplier_id:int, db:Session = Depends(get_db)):

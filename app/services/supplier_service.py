@@ -3,10 +3,17 @@ from fastapi import HTTPException
 from app.repositories import supplier_repository, product_repository
 
 
-def get_products_for_supplier(supplier_id: int, db):
+def get_supplier(supplier_id, db):
     supplier = supplier_repository.get_by_id(supplier_id, db)
-
-    if not supplier:
+    if supplier:
+        return supplier
+    else:
         raise HTTPException(status_code=404, detail="Supplier not found")
 
+def get_all_suppliers(db):
+    suppliers = supplier_repository.get_all(db)
+    return suppliers
+
+def get_products_for_supplier(supplier_id: int, db):
+    supplier = get_supplier(supplier_id, db)
     return product_repository.get_by_supplier_id(supplier_id, db)
