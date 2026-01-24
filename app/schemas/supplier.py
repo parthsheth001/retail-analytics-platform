@@ -1,13 +1,14 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
+
 
 class SupplierBase(BaseModel):
     name: str
-    email: str
+    email: EmailStr
 
 class SupplierCreate(SupplierBase):
     pass
 
-class SupplierResponse(SupplierBase):
+class SupplierList(SupplierBase):
     id: int
 
     class Config:
