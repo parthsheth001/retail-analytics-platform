@@ -1,10 +1,33 @@
 from sqlalchemy.orm import Session
-
+from sqlalchemy import asc, desc
 from app.models.product import Product
 
 
-def get_all(db: Session, skip:int=0, limit:int=10):
-    return db.query(Product).offset(skip).limit(limit).all()
+def get_all(
+        db: Session,
+        skip: int,
+        limit: int,
+        supplier_id=None,
+        min_price=None,
+        max_price=None,
+        sort_by="id",
+        order="asc"
+):
+    query = db.query(Product)
+
+    if supplier_id is not None:
+        query = query.filter(Product.supplier_id == supplier_id)
+
+    if min_price is not None:
+        query = query.filter(Product.price >= min_price)
+
+    if max_price is not None:
+        query = query.filter(Product.price <= max_price)
+
+    sort_column = getattr(Product, sort_by)
+    query = query.order_by(asc(sort_column) if order == "asc" else desc(sort_column))
+
+    return query.offset(skip).limit(limit).all()
 
 
 def get_by_id(product_id, db):
