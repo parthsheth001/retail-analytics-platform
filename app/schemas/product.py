@@ -7,7 +7,7 @@ class ProductBase(BaseModel):
 
 class ProductCreate(BaseModel):
     name: str
-    price: float = Field(gt=0)
+    price: float # = Field(gt=0)
     supplier_id: int
 
 class ProductList(BaseModel):

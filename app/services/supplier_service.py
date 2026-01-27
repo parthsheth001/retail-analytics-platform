@@ -8,7 +8,7 @@ def get_supplier(supplier_id, db):
     if supplier:
         return supplier
     else:
-        raise HTTPException(status_code=404, detail="Supplier not found")
+        raise HTTPException(status_code=422, detail="Supplier not found")
 
 def get_all_suppliers(db):
     suppliers = supplier_repository.get_all(db)

@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from app.repositories import product_repository
+from app.services import supplier_service
 
 ALLOWED_SORT_FIELDS = {"id", "price", "name"}
 ALLOWED_ORDER = {"asc", "desc"}
@@ -41,4 +42,7 @@ def get_all_products(
     )
 
 def create_product(product, db):
+    if product["price"] < 0:
+        raise HTTPException(status_code=422, detail="Price cannot be negative value.")
+    supplier_service.get_supplier(product["supplier_id"],db)
     return product_repository.create(product, db)
