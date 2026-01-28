@@ -55,10 +55,7 @@ def update_product(
         product: ProductUpdate,
         db: Session = Depends(get_db)
 ):
-    # return product_service.update_product(product_id,product, db)
-    updated = product_service.update_product(product_id, product, db)
-    print("RETURNING:", updated.__dict__)
-    return updated
+    return product_service.update_product(product_id,product, db)
 
 @router.delete("/{product_id}")
 def delete_product(product_id: int, db: Session = Depends(get_db)):
