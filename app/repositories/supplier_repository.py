@@ -1,3 +1,5 @@
+from sqlalchemy import true
+
 from app.models.supplier import Supplier
 
 def get_all(db):
@@ -6,12 +8,12 @@ def get_all(db):
 
 def get_by_id(supplier_id,db):
     return db.query(Supplier).filter(
-        Supplier.id == supplier_id
+        Supplier.id == supplier_id, Supplier.is_active==True
     ).first()
 
 def get_by_email(db, email):
     return db.query(Supplier).filter(
-        Supplier.email == email
+        Supplier.email == email,Supplier.is_active==True
     ).first()
 
 def create(supplier,db):

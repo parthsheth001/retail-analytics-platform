@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, Float
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean
 from sqlalchemy.orm import relationship
 from app.db.base import Base
 
@@ -7,7 +7,8 @@ class Product(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     name = Column(String, index=True)
-    price = Column(Float)
+    price = Column(Float, nullable=False)
     supplier_id = Column(Integer, ForeignKey("suppliers.id"))
+    is_active = Column(Boolean, default=True)
 
     supplier = relationship("Supplier", back_populates="products")

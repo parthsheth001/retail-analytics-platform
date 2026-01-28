@@ -20,7 +20,7 @@ def get_products_for_supplier(supplier_id: int, db):
 
 
 def create_supplier(supplier,db):
-    existing = supplier_repository.get_by_email(db, supplier.email)
+    existing = supplier_repository.get_by_email(db, supplier["email"])
 
     if existing:
         raise HTTPException(

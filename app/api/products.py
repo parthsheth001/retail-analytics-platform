@@ -4,13 +4,13 @@ from sqlalchemy.orm import Session
 from starlette import status
 
 from app.db.deps import get_db
-from app.schemas.product import ProductList, ProductCreate
+from app.schemas.product import ProductList, ProductCreate, ProductUpdate
 from app.services import product_service
 
 router = APIRouter(prefix="/products", tags=["Products"])
 
 
-''' API to get all suppliers'''
+''' API to get all products'''
 @router.get(path="/", response_model=List[ProductList])
 def get_products(
         skip: int = Query(0, ge=0),
@@ -45,10 +45,25 @@ def get_product(product_id:int, db:Session = Depends(get_db)):
     status_code=status.HTTP_201_CREATED
 )
 def create_product(product: ProductCreate,db: Session = Depends(get_db)):
-    # try:
     return product_service.create_product(product.model_dump(), db)
-    # except Exception:
-    #     raise HTTPException(
-    #         status_code=500,
-    #         detail="Failed to create product"
-    #     )
+
+@router.patch("/{product_id}",
+              response_model=ProductList,
+              status_code=status.HTTP_200_OK)
+def update_product(
+        product_id: int,
+        product: ProductUpdate,
+        db: Session = Depends(get_db)
+):
+    # return product_service.update_product(product_id,product, db)
+    updated = product_service.update_product(product_id, product, db)
+    print("RETURNING:", updated.__dict__)
+    return updated
+
+@router.delete("/{product_id}")
+def delete_product(product_id: int, db: Session = Depends(get_db)):
+    result = product_service.delete_product(product_id, db)
+    if result:
+        raise HTTPException(status_code=status.HTTP_202_ACCEPTED)
+    else:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST)

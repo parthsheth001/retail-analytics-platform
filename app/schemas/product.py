@@ -1,14 +1,20 @@
-from pydantic import BaseModel, Field
+from typing import Optional
+
+from pydantic import BaseModel
 
 
 class ProductBase(BaseModel):
-    name: str
-    price: float
+    pass
 
 class ProductCreate(BaseModel):
     name: str
-    price: float # = Field(gt=0)
+    price: float
     supplier_id: int
+
+class ProductUpdate(BaseModel):
+    name: Optional[str] = None
+    price: Optional[float] = None
+    supplier_id: Optional[int] = None
 
 class ProductList(BaseModel):
     id: int

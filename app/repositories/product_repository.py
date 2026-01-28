@@ -13,7 +13,7 @@ def get_all(
         sort_by="id",
         order="asc"
 ):
-    query = db.query(Product)
+    query = db.query(Product).filter(Product.is_active==True)
 
     if supplier_id is not None:
         query = query.filter(Product.supplier_id == supplier_id)
@@ -31,14 +31,12 @@ def get_all(
 
 
 def get_by_id(product_id, db):
-    return db.query(Product).filter(
-        Product.id == product_id
-    ).first()
+    return db.query(Product).filter(Product.is_active==True,Product.id == product_id).first()
 
 
 def get_product_by_supplier_id(supplier_id: int, db):
     return db.query(Product).filter(
-        Product.supplier_id == supplier_id
+        Product.supplier_id == supplier_id,Product.is_active==True
     ).all()
 
 
@@ -48,3 +46,17 @@ def create(product, db) -> Product:
     db.commit()
     db.refresh(product)
     return product
+
+def update(db_product, update_data, db) -> Product:
+    for key, value in update_data.items():
+        setattr(db_product, key, value)
+    db.commit()
+    db.refresh(db_product)
+    return db_product
+
+
+def delete(db_product, db) -> Product:
+    db_product.is_active = False
+    db.commit()
+    db.refresh(db_product)
+    return db_product

@@ -46,3 +46,37 @@ def create_product(product, db):
         raise HTTPException(status_code=422, detail="Price cannot be negative value.")
     supplier_service.get_supplier(product["supplier_id"],db)
     return product_repository.create(product, db)
+
+def update_product(product_id, product, db):
+    db_product = get_product(product_id, db) #checks if product exists
+    update_data = product.dict(exclude_unset=True)
+
+    # --- Business validations ---
+    if "price" in update_data and update_data["price"] <= 0:
+        raise HTTPException(status_code=422, detail="Price must be greater than zero.")
+
+    if "name" in update_data and not update_data["name"]:
+        raise HTTPException(status_code=422, detail="Name cannot be empty.")
+
+    if "supplier_id" in update_data:
+        supplier_service.get_supplier(update_data["supplier_id"], db)
+
+    return product_repository.update(db_product, update_data, db)
+
+    # if "price" in product and (product["price"] < 0 or product["price"] is None):
+    #     raise HTTPException(status_code=422, detail="Price cannot be negative value.")
+    #
+    # if "name" in product and product["name"] is None:
+    #     raise HTTPException(status_code=422, detail="Name cannot be empty.")
+    #
+    # if "supplier_id" in product and product["supplier_id"] is None:
+    #     raise HTTPException(status_code=422, detail="Supplier_id cannot be empty.")
+    #
+    # supplier_service.get_supplier(product["supplier_id"],db)
+    #
+    # return product_repository.update(db_product,product, db)
+
+def delete_product(product_id, db):
+    db_product = get_product(product_id, db) #checks if product exists
+    deleted = product_repository.delete(db_product, db)
+    return True if deleted else False
